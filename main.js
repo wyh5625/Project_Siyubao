@@ -17,6 +17,7 @@ var helpPage = UI_var.helpPage
 PJYSDK = require("./paojiaoyun.js")
 var UI_var2 = require('./UI_var2');
 var thirdPage = UI_var2.thirdPage
+var 群列表_QF = [];
 
 
 
@@ -276,7 +277,7 @@ thirdPage.参数viewpager.setOnPageChangeListener({
 
 let Array2 = ['抖音按钮1', '抖音按钮2', '抖音按钮3']
 let Array3 = ['微信按钮1', '微信按钮2', '微信按钮3']
-let Array4 = ['小红书按钮1', '小红书按钮2', '小红书按钮3']
+let Array4 = ['小红书按钮1', '小红书按钮2', '小红书按钮3', '小红书按钮4']
 let Array5 = ['快手按钮1']
 
 
@@ -296,9 +297,10 @@ clickButton2(Array3, "微信按钮3", 5)
 clickButton2(Array4, "小红书按钮1", 6)
 clickButton2(Array4, "小红书按钮2", 7)
 clickButton2(Array4, "小红书按钮3", 8)
+clickButton2(Array4, "小红书按钮4", 9)
 
 
-clickButton2(Array5, "快手按钮1", 9)
+clickButton2(Array5, "快手按钮1", 10)
 // clickButton2(Array5, "快手按钮2", 11)
 // clickButton2(Array5, "快手按钮3", 12)
 
@@ -376,7 +378,7 @@ function position1(n) {
                 break;
 
             case 2:
-                if (n > 5 && n <= 8) {
+                if (n > 5 && n <= 9) {
                     thirdPage[Array_main[ix]].setChecked(true)
                     thirdPage[Array_main[ix]].attr('backgroundTint', '#F3F4F8');
                     thirdPage[Array_main[ix]].attr('textColor', '#000000');
@@ -389,7 +391,7 @@ function position1(n) {
                 break;
 
             case 3:
-                if (n > 8) {
+                if (n > 9) {
                     thirdPage[Array_main[ix]].setChecked(true)
                     thirdPage[Array_main[ix]].attr('backgroundTint', '#F3F4F8');
                     thirdPage[Array_main[ix]].attr('textColor', '#000000');
@@ -410,7 +412,7 @@ function position1(n) {
 }
 
 function position2(n) {
-    let Array_second = ['抖音按钮1', '抖音按钮2', '抖音按钮3', "微信按钮1", "微信按钮2", "微信按钮3", "小红书按钮1", "小红书按钮2", "小红书按钮3", "快手按钮1"]
+    let Array_second = ['抖音按钮1', '抖音按钮2', '抖音按钮3', "微信按钮1", "微信按钮2", "微信按钮3", "小红书按钮1", "小红书按钮2", "小红书按钮3", "小红书按钮4", "快手按钮1"]
     for (let ixx = 0; ixx < Array_second.length; ixx++) {
         ///如果ixx和n相等，则将其设为选中状态
         if (ixx == n) {
@@ -435,7 +437,7 @@ function position3(n) {
         thirdPage.viewPager.setCurrentItem(1, true)
     }
 
-    else if (n > 5 && n <= 8) {
+    else if (n > 5 && n <= 9) {
         thirdPage.viewPager.setCurrentItem(2, true)
     }
     else {
@@ -539,6 +541,7 @@ setupSeekBarChangeListener(thirdPage.评论概率_KS, thirdPage.评论概率值_
 setupSeekBarChangeListener(thirdPage.头像点赞概率_KS, thirdPage.头像点赞概率值_KS);
 setupSeekBarChangeListener(thirdPage.私信概率_KS, thirdPage.私信概率值_KS);
 setupSeekBarChangeListener(thirdPage.关注概率_KS, thirdPage.关注概率值_KS);
+setupSeekBarChangeListener(thirdPage.群发送概率_QF, thirdPage.群发送概率值_QF);
 //////////////////////////////////////////////////////////////seekbar结束////////////////////////////////////////////////////////////////////////
 
 
@@ -571,7 +574,10 @@ var WX_HK_button3 = thirdPage.微信按钮3
 var XHS_HK_button1 = thirdPage.小红书按钮1
 var XHS_HK_button2 = thirdPage.小红书按钮2
 var XHS_HK_button3 = thirdPage.小红书按钮3
+var XHS_HK_button4 = thirdPage.小红书按钮4
+var XHS_HK_button41 = thirdPage.小红书按钮4_打开图库
 var KS_HK_button1 = thirdPage.快手按钮1
+
 
 
 // var HK_executeButton = thirdPage.开始获客
@@ -607,6 +613,7 @@ var HK_DY_JL = require("./HK_DY_JL")
 var HK_XHS_JL = require("./HK_XHS_JL")
 var HK_XHS_TH = require("./HK_XHS_TH")
 var HK_XHS_TW = require("./HK_XHS_TW")
+var HK_XHS_QF = require("./HK_XHS_QF")
 
 var HK_WX_SPH = require("./HK_WX_SPH_JL");
 var HK_WX_FJS = require("./HK_WX_FJS")
@@ -672,8 +679,24 @@ secondPage.保存.click(function () {
 
 })
 
+
+
 ////////////////获客的参数保存/////////////////////////////
-var params_HK = local_storage.get("params_HK")
+// var params_HK = local_storage.get("params_HK")
+// var params_HK = JSON.parse(local_storage.get("params_HK"))
+
+// 从 local_storage 中获取存储的数据
+var paramData = local_storage.get("params_HK");
+if(paramData){
+    var params_HK = JSON.parse(paramData);
+}
+// console.log("storedData: ", storedData);
+
+var groupData = local_storage.get("params_XHS_GROUP");
+if(groupData){
+    群列表_QF = JSON.parse(groupData);
+}
+
 try {
     if (params_HK != null) {
         ///设置参数
@@ -823,8 +846,12 @@ try {
         thirdPage.私信话术_KS.setText(params_HK.快手截流_私信话术)
         thirdPage.目标客户评论话术_KS.setText(params_HK.快手截流_目标客户评论话术)
 
-
-
+        thirdPage.发送文字_QF.setChecked(params_HK.小红书群发_发送文字)
+        thirdPage.发送图片_QF.setChecked(params_HK.小红书群发_发送图片)
+        thirdPage.文字内容_QF.setText(params_HK.小红书群发_文字内容)
+        thirdPage.群检测_QF.setChecked(params_HK.小红书群发_群检测)
+        thirdPage.发送间隔_QF.setText(params_HK.小红书群发_发送间隔)
+        thirdPage.群发送概率_QF.setProgress(params_HK.小红书群发_群发送概率)
 
     }
 }
@@ -987,10 +1014,18 @@ thirdPage.保存.click(function () {
         , 快手截流_私信话术: thirdPage.私信话术_KS.text()
         , 快手截流_目标客户评论话术: thirdPage.目标客户评论话术_KS.text()
 
+        , 小红书群发_发送文字: thirdPage.发送文字_QF.checked
+        , 小红书群发_发送图片: thirdPage.发送图片_QF.checked
+        , 小红书群发_文字内容: thirdPage.文字内容_QF.text()
+        , 小红书群发_群检测: thirdPage.群检测_QF.checked
+        , 小红书群发_发送间隔: thirdPage.发送间隔_QF.text()
+        , 小红书群发_群发送概率: parseInt(thirdPage.群发送概率_QF.getProgress())
+
     }
 
 
-    local_storage.put("params_HK", param_obj_HK)
+    // local_storage.put("params_HK", param_obj_HK)
+    local_storage.put("params_HK", JSON.stringify(param_obj_HK)); // 将对象转换为字符串
 
     toastLog("参数保存成功")
 
@@ -1410,6 +1445,29 @@ main_executeButton.click(function () {
                                                 app.launchApp("小红书")
                                                 threads.start(function () { HK_XHS_TH.Main(搜索关键词,笔记类型, 排序依据,发布时间,搜索范围,运行时长,查找方式,单一行为,背景点赞概率,关注概率,私信概率,头像点赞概率,私信数组) })
                                                 break;
+                                            case XHS_HK_button4.checked:
+                                                toastLog("执行小红书获客任务4")
+                                                ///获得参数
+                                                var 搜索关键词 = thirdPage.同行关键词_TH.text()
+                                                var 运行时长 = parseInt(thirdPage.运行时长_TH.text())
+                                                var 查找方式 = thirdPage.查找方式_TH.getSelectedItem().toString()
+                                                var 笔记类型 = thirdPage.笔记类型_TH.getSelectedItem().toString()
+                                                var 排序依据 = thirdPage.排序依据_TH.getSelectedItem().toString()
+                                                var 发布时间 = thirdPage.发布时间_TH.getSelectedItem().toString()
+                                                var 搜索范围 = thirdPage.搜索范围_TH.getSelectedItem().toString()
+                                                var 单一行为 = thirdPage.单一行为_TH.checked
+                                                var 背景点赞概率 = thirdPage.背景点赞概率_TH.getProgress()
+                                                var 关注概率 = thirdPage.关注概率_TH.getProgress()
+                                                var 私信概率 = thirdPage.私信概率_TH.getProgress()
+                                                var 私信数组 = thirdPage.私信话术_TH.text().split("#")
+                                                var 头像点赞概率 = thirdPage.头像点赞概率_TH.getProgress()
+
+
+
+
+                                                app.launchApp("小红书")
+                                                threads.start(function () { HK_XHS_QF.Main() })
+                                                break;
                                             default:
                                                 console.log("没有二级按钮被选中");
                                         }
@@ -1785,6 +1843,22 @@ main_executeButton.click(function () {
 
                                     app.launchApp("小红书")
                                     threads.start(function () { HK_XHS_TH.Main(搜索关键词,笔记类型, 排序依据,发布时间,搜索范围,运行时长,查找方式,单一行为,背景点赞概率,关注概率,私信概率,头像点赞概率,私信数组)  })
+                                    break;
+                                case XHS_HK_button4.checked:
+                                    toastLog("执行小红书获客任务４")
+                                    ///获得参数
+                                    var 发送文字 = thirdPage.发送文字_QF.checked
+                                    var 发送图片 = thirdPage.发送图片_QF.checked
+                                    var 文字内容 = thirdPage.文字内容_QF.text()
+                                    var 群检测 = thirdPage.群检测_QF.checked
+                                    var 发送间隔 = parseInt(thirdPage.发送间隔_QF.text())
+                                    var 群发送概率 = thirdPage.群发送概率_QF.getProgress()
+
+                                    app.launchApp("小红书")
+                                    threads.start(function () { 
+                                        群列表_QF = HK_XHS_QF.Main(发送文字, 发送图片, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF)  
+                                        local_storage.put("params_XHS_GROUP", JSON.stringify(群列表_QF))
+                                    })
                                     break;
                                 default:
                                     console.log("没有二级按钮被选中");

@@ -55,6 +55,7 @@ var thirdPage = ui.inflate(
                             <com.google.android.material.button.MaterialButton clickable="true" checkable="true" id="小红书按钮1" text="截流获客" margin="5dp 2dp 1dp 2dp" gravity="center_vertical|center_horizontal" textStyle="bold" textColor="#A5AAA3" backgroundTint="#FFFFFF" w="0" layout_weight="1" />
                             <com.google.android.material.button.MaterialButton clickable="true" checkable="true" id="小红书按钮2" text="图文提问" margin="1dp 2dp 1dp 2dp" gravity="center_vertical|center_horizontal" textStyle="bold" textColor="#A5AAA3" backgroundTint="#FFFFFF" w="0" layout_weight="1" />
                             <com.google.android.material.button.MaterialButton clickable="true" checkable="true" id="小红书按钮3" text="同行粉丝" margin="1dp 2dp 1dp 2dp" gravity="center_vertical|center_horizontal" textStyle="bold" textColor="#A5AAA3" backgroundTint="#FFFFFF" w="0" layout_weight="1" />
+                            <com.google.android.material.button.MaterialButton clickable="true" checkable="true" id="小红书按钮4" text="群发" margin="1dp 2dp 1dp 2dp" gravity="center_vertical|center_horizontal" textStyle="bold" textColor="#A5AAA3" backgroundTint="#FFFFFF" w="0" layout_weight="1" />
                         </horizontal>
 
                         <horizontal id="快手子版块">
@@ -1493,6 +1494,105 @@ var thirdPage = ui.inflate(
                     </vertical>
 
                     <vertical id="mode_para_10" >
+                        <ScrollView>
+                            <vertical>
+  
+                                <card id="群发设置"
+                                    marginTop="15dp"
+                                    marginLeft="8dp"
+                                    marginRight="8dp"
+                                    marginBottom="5dp"
+                                    cardCornerRadius="14dp"
+                                    h="auto"
+                                    w="*"
+                                    elevation="5dp">
+
+                                    <vertical>
+                                        <card bg="#F3F4F8" h="30dp">
+                                            <text text="群发设置" gravity="center" />
+                                        </card>
+
+                                        <vertical marginTop="10dp">
+                                            <RadioGroup orientation="horizontal">
+                                                <radio id="发送文字_QF" text="文字" layout_weight="1" gravity="center_vertical" marginLeft="15dp"/>
+                                                <radio id="发送图片_QF" text="图片" layout_weight="1" gravity="center_vertical" marginLeft="15dp"/>
+                                            </RadioGroup>
+
+                                            <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
+
+                                            <horizontal h="40dp" w="*" >
+                                                <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="文字内容" marginLeft="15dp" />
+                                                <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+                                                    <input id="文字内容_QF" text="大家好！" w="100dp" singleLine="True" textSize="14sp" marginRight="22dp" />
+                                                </horizontal>
+                                            </horizontal>
+                                            
+                                            <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
+
+                                            <horizontal h="40dp" w="*" >
+                                                <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="群扫描" marginLeft="15dp" />
+                                                <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+                                                    <Switch id="群检测_QF" marginRight="10dp" />
+                                                </horizontal>
+                                            </horizontal>
+
+                                        </vertical>
+                                    </vertical>
+                                </card>
+
+                                <card id="群发参数设置"
+                                    marginTop="15dp"
+                                    marginLeft="8dp"
+                                    marginRight="8dp"
+                                    marginBottom="5dp"
+                                    cardCornerRadius="14dp"
+                                    h="auto"
+                                    w="*"
+                                    elevation="5dp"
+                                >
+
+                                    <vertical >
+                                        <card bg="#F3F4F8"
+                                            h="30dp" >
+                                            <text text="群发参数设置" gravity="center" />
+                                        </card>
+                                        <vertical >
+                                            <horizontal h="40dp" w="*" >
+                                                <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="发送间隔" marginLeft="15dp" />
+                                                <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+                                                    <input id="发送间隔_QF" text="5" inputType="number" singleLine="True" textSize="14sp" /> <text text="秒" />
+                                                </horizontal>
+                                            </horizontal>
+
+
+                                            <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
+
+                                            <horizontal h="40dp" w="*" gravity="center_vertical" >
+                                                <text h="*" w="0" layout_weight="1" layout_gravity="center_vertical" gravity="center_vertical" text="发送概率" marginLeft="15dp" />
+                                                <text h="*" w="0" layout_weight="1" layout_gravity="center_vertical" gravity="center_vertical|right" id="群发送概率值_QF" text="0%" marginRight="30dp" />
+                                            </horizontal>
+                                            <vertical marginBottom="10dp" gravity="center">
+                                                <seekbar id="群发送概率_QF" max="100" w="330dp" />
+                                            </vertical>
+
+                                        </vertical>
+
+                                    </vertical>
+
+
+
+
+
+                                </card>
+
+                            </vertical>
+                        </ScrollView>
+
+
+
+                    </vertical>
+
+                    <vertical id="mode_para_11" >
                         <ScrollView>
                             <vertical>
                                 <card
