@@ -848,7 +848,9 @@ try {
 
         thirdPage.发送文字_QF.setChecked(params_HK.小红书群发_发送文字)
         thirdPage.发送图片_QF.setChecked(params_HK.小红书群发_发送图片)
+        thirdPage.改群昵称_QF.setChecked(params_HK.小红书群发_改群昵称)
         thirdPage.文字内容_QF.setText(params_HK.小红书群发_文字内容)
+        thirdPage.群昵称_QF.setText(params_HK.小红书群发_群昵称)
         thirdPage.群检测_QF.setChecked(params_HK.小红书群发_群检测)
         thirdPage.发送间隔_QF.setText(params_HK.小红书群发_发送间隔)
         thirdPage.群发送概率_QF.setProgress(params_HK.小红书群发_群发送概率)
@@ -1016,7 +1018,9 @@ thirdPage.保存.click(function () {
 
         , 小红书群发_发送文字: thirdPage.发送文字_QF.checked
         , 小红书群发_发送图片: thirdPage.发送图片_QF.checked
+        , 小红书群发_改群昵称: thirdPage.改群昵称_QF.checked
         , 小红书群发_文字内容: thirdPage.文字内容_QF.text()
+        , 小红书群发_群昵称: thirdPage.群昵称_QF.text()
         , 小红书群发_群检测: thirdPage.群检测_QF.checked
         , 小红书群发_发送间隔: thirdPage.发送间隔_QF.text()
         , 小红书群发_群发送概率: parseInt(thirdPage.群发送概率_QF.getProgress())
@@ -1849,14 +1853,16 @@ main_executeButton.click(function () {
                                     ///获得参数
                                     var 发送文字 = thirdPage.发送文字_QF.checked
                                     var 发送图片 = thirdPage.发送图片_QF.checked
+                                    var 改群昵称 = thirdPage.改群昵称_QF.checked
                                     var 文字内容 = thirdPage.文字内容_QF.text()
+                                    var 群昵称 = thirdPage.群昵称_QF.text()
                                     var 群检测 = thirdPage.群检测_QF.checked
                                     var 发送间隔 = parseInt(thirdPage.发送间隔_QF.text())
                                     var 群发送概率 = thirdPage.群发送概率_QF.getProgress()
 
                                     app.launchApp("小红书")
                                     threads.start(function () { 
-                                        群列表_QF = HK_XHS_QF.Main(发送文字, 发送图片, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF)  
+                                        群列表_QF = HK_XHS_QF.Main(发送文字, 发送图片, 改群昵称, 群昵称, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF)  
                                         local_storage.put("params_XHS_GROUP", JSON.stringify(群列表_QF))
                                     })
                                     break;

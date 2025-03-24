@@ -1516,6 +1516,7 @@ var thirdPage = ui.inflate(
                                             <RadioGroup orientation="horizontal">
                                                 <radio id="发送文字_QF" text="文字" layout_weight="1" gravity="center_vertical" marginLeft="15dp"/>
                                                 <radio id="发送图片_QF" text="图片" layout_weight="1" gravity="center_vertical" marginLeft="15dp"/>
+                                                <radio id="改群昵称_QF" text="改群昵称" layout_weight="1" gravity="center_vertical" marginLeft="15dp"/>
                                             </RadioGroup>
 
                                             <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
@@ -1524,6 +1525,15 @@ var thirdPage = ui.inflate(
                                                 <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="文字内容" marginLeft="15dp" />
                                                 <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
                                                     <input id="文字内容_QF" text="大家好！" w="100dp" singleLine="True" textSize="14sp" marginRight="22dp" />
+                                                </horizontal>
+                                            </horizontal>
+
+                                            <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
+
+                                            <horizontal h="40dp" w="*" >
+                                                <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="在群里的昵称" marginLeft="15dp" />
+                                                <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+                                                    <input id="群昵称_QF" text="麦格事务所" w="100dp" singleLine="True" textSize="14sp" marginRight="22dp" />
                                                 </horizontal>
                                             </horizontal>
                                             
