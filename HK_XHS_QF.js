@@ -37,13 +37,26 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
     var returned = text("消息").className("android.widget.TextView").findOne();
     returned.parent().click();
     sleep(1000);
+
+    this.swipeAction_Reverse()
+    sleep(1000);
+
+    log("再次点击消息");
+    returned.parent().click();
+
+    sleep(1000);
+
+    this.swipeAction_Reverse()
+    sleep(1000);
+
+    log("再次点击消息");
+    returned.parent().click();
     
     
     log("刷新");
     // 刷新
-    this.swipeAction_Reverse()
-    sleep(1000);
-
+    
+    sleep(3000);
 
     var msg_list = [];
 
@@ -53,29 +66,29 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
     // 遍历列表寻找未检查的消息，检查是否是群，然后对群消息进行发送图片。
     let stop = false;
     while(!stop){
-        var returned = className("androidx.recyclerview.widget.RecyclerView").find();
-        toastLog("num of recyclerview: " + returned.length);
-        returned.forEach(function(item, index, array) {
-            toastLog("recyclerview" + index + ": " + item.children().length);
-        });
+        var returned = className("androidx.recyclerview.widget.RecyclerView").depth(14).findOne();
+        // toastLog("num of recyclerview: " + returned.length);
+        // returned.forEach(function(item, index, array) {
+        //     toastLog("recyclerview" + index + ": " + item.children().length);
+        // });
 
         // 假设只有一个 recyclerview
-        var recyclerview = returned[0];
+        var recyclerview = returned;
         // for (let i = 0; i < returned.length; i++) {
-        //     if (returned[i].length > 7) {
-        //         recyclerview = returned[i];
+        //     if (returned[i].children().length > 7) {
+        //         var recyclerview = returned[i];
         //         break;
         //     }
         // }
 
         let all_included = true;
         children = recyclerview.children();
-        toastLog("length of msg list: " + children.length);
+        log("length of msg list: " + children.length);
         children.forEach((item, index, array) => {
             
             // 在这里执行针对当前元素的操作
             // 获得名字
-            if (item.className() == "android.widget.RelativeLayout"){
+            if (item.className() == "android.view.ViewGroup" && item.clickable()){
 
                 var msg_card = item.findOne(className("android.widget.LinearLayout"));
                 if(msg_card){
@@ -83,7 +96,7 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
 
                     // 检查 msg_name 是否检查过
                     if (!msg_list.includes(msg_name)){
-                        toastLog("Name of the msg: " + msg_name);
+                        log("Name of the msg: " + msg_name);
                         all_included = false;
                         msg_list.push(msg_name);
 
@@ -99,10 +112,10 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                         if(群检测){
                             sleep(发送间隔*1000);
                             // 点击 item
-                            if(item.click()){
-                                toastLog("Clicked success!");
+                            if(item.findOne(className("android.widget.RelativeLayout")).click()){
+                                log("Clicked success1!");
                             } else{
-                                toastLog("Clicked failed!");
+                                log("Clicked failed1!");
                             }
 
                             sleep(1000 + random(500, 1000));
@@ -112,20 +125,20 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                             if (title_bars){
                                 var title_bar = title_bars[0];
 
-                                toastLog("num of title_bar: " + title_bars.length);
+                                log("num of title_bar: " + title_bars.length);
                             
                                 // 检查 title_bar 的长度, 6 是私聊 7 是群聊
                                 var lengofbar = title_bar.children().length;
-                                toastLog("length of bar: " + lengofbar);
+                                log("length of bar: " + lengofbar);
 
                                 if (lengofbar == 7){
                                     // 群聊
-                                    toastLog(msg_name + " is group! ");
+                                    log(msg_name + " is group! ");
                                     group_list.push(msg_name);
                                     toSend = true;
                                 }else{
                                     // 私聊
-                                    toastLog(msg_name + " is dm! ");
+                                    log(msg_name + " is dm! ");
                                     toSend = false;
 
                                     // 点击返回
@@ -137,7 +150,7 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                     sleep(1000 + random(500, 1000));
                                 }
                             }else{
-                                toastLog("Can't find title bar!");
+                                log("Can't find title bar!");
                             }
 
                             // 已经点击进去了
@@ -146,10 +159,10 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                             // 非群检测，如果遇到名字在群里表里，直接发送。不需要更新群列表
                             if(群列表_QF.includes(msg_name)){
                                 sleep(发送间隔*1000);
-                                if(item.click()){
-                                    toastLog("Clicked success!");
+                                if(item.findOne(className("android.widget.RelativeLayout")).click()){
+                                    log("Clicked success2!");
                                 } else{
-                                    toastLog("Clicked failed!");
+                                    log("Clicked failed2!");
                                 }
 
                                 group_list.push(msg_name);
@@ -200,7 +213,7 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                 if (发送图片){
                                     // 发送图片
                                     var add_buttons = className("android.widget.ImageView").depth(10).find();
-                                    toastLog("Num of add buttons: " + add_buttons.length);
+                                    log("Num of add buttons: " + add_buttons.length);
     
                                     var add_button = add_buttons[0];
                                     add_button.click();
@@ -208,19 +221,19 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                     sleep(1000 + random(500, 1000));
     
                                     var image_buttons = className("android.widget.LinearLayout").depth(16).find();
-                                    toastLog("Num of image buttons: " + image_buttons.length);
+                                    log("Num of image buttons: " + image_buttons.length);
     
                                     var image_button = image_buttons[0];
                                     image_button.click();
                                     sleep(1000 + random(500, 1000));
     
                                     var firstPicture = className("android.widget.FrameLayout").depth(13).drawingOrder(1).findOne();
-                                    toastLog("Num of image buttons: " + image_buttons.length);
+                                    log("Num of image buttons: " + image_buttons.length);
                                     
                                     // 选择图片
                                     // firstPicture.child(0).child(0).children().length;
                                     if(firstPicture.child(0).child(0).child(4).click()){
-                                        toastLog("picture selected success!");
+                                        log("picture selected success!");
                                     }else{
                                         toastLog("picture selected failed!");
                                     }
@@ -244,11 +257,11 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                 if (title_bars){
                                     var title_bar = title_bars[0];
 
-                                    toastLog("num of title_bar: " + title_bars.length);
+                                    log("num of title_bar: " + title_bars.length);
                                 
                                     // 检查 title_bar 的长度, 6 是私聊 7 是群聊
                                     var lengofbar = title_bar.children().length;
-                                    toastLog("length of bar: " + lengofbar);
+                                    log("length of bar: " + lengofbar);
                                     var menu_button = title_bar.children()[6];
                                     menu_button.click();
                                     sleep(1000 + random(500, 1000));
@@ -273,19 +286,29 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                         toastLog("未找到输入框");
                                     }
 
-                                    toastLog("输入昵称");
+                                    log("输入昵称");
 
                                     setText(群昵称);
                                     sleep(1000 + random(500, 1000));
 
                                     // 保存
-                                    var returned = text("保存").className("android.widget.Button").clickable(true).visibleToUser(true).findOne(500);
+                                    var returned = text("保存").className("android.widget.Button").clickable(true).enabled(true).visibleToUser(true).findOne(500);
                                     if (returned) {
                                         click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
                                         sleep(500 + random(100, 200));
                                         log("已保存");
                                     } else {
-                                        toastLog("未找到保存键");
+                                        toastLog("保存键不可用");
+
+                                        var returned = className("android.widget.RelativeLayout").depth(7).findOne(1000);
+                                        returned = returned.child(0);
+                                        if (returned) {
+                                            click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                            sleep(500 + random(100, 200));
+                                            log("已返回");
+                                        } else {
+                                            toastLog("未找到返回键");
+                                        }
                                     }
 
                                     sleep(1000 + random(500, 1000))
@@ -503,8 +526,8 @@ HK_XHS_QF.swipeAction_Reverse = function swipeAction_Reverse() {
     var X1 = device.width / 2 + random(-2, 2); // 起始点X坐标，屏幕宽度的一半
     var Y1 = (device.height / 2) + random(-10, 10); // 起始点Y坐标，屏幕高度的一半
     var X2 = X1 + random(-5, +5); // 结束点X坐标，向左滑动300像素
-    var Y2 = device.height - random(50, 100); // 结束点Y坐标保持不变
-    var duration1 = random(0.5, 0.8) * 1000; // 滑动持续时间，单位为毫秒
+    var Y2 = device.height - random(150, 200); // 结束点Y坐标保持不变
+    var duration1 = random(0.2, 0.5) * 1000; // 滑动持续时间，单位为毫秒
 
     // 执行滑动操作
     swipe(X1, Y1, X2, Y2, duration1);
