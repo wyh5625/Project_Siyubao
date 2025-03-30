@@ -63,6 +63,16 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
     var group_list = [];
     var sent_group_list = [];
 
+    var 已发群 = [];
+
+    var local_storage = storages.create("Siyubao.xyz.localStorage");
+    var sentGroup = local_storage.get("params_XHS_Sent_GROUP");
+    if(sentGroup){
+        已发群 = JSON.parse(sentGroup);
+        toastLog("发现已发群：" + 已发群.length);
+    }
+
+
     // 遍历列表寻找未检查的消息，检查是否是群，然后对群消息进行发送图片。
     let stop = false;
     while(!stop){
@@ -91,11 +101,13 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
             if (item.className() == "android.view.ViewGroup" && item.clickable()){
 
                 var msg_card = item.findOne(className("android.widget.LinearLayout"));
+
+                // 如果不存在 android.widget.LinearLayout 就不是群聊
                 if(msg_card){
                     var msg_name = msg_card.child(0).text();
 
                     // 检查 msg_name 是否检查过
-                    if (!msg_list.includes(msg_name)){
+                    if (!msg_list.includes(msg_name) && !已发群.includes(msg_name)){
                         log("Name of the msg: " + msg_name);
                         all_included = false;
                         msg_list.push(msg_name);
@@ -110,63 +122,17 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                         
                         
                         if(群检测){
-                            sleep(发送间隔*1000);
-                            // 点击 item
-                            if(item.findOne(className("android.widget.RelativeLayout")).click()){
-                                log("Clicked success1!");
-                            } else{
-                                log("Clicked failed1!");
-                            }
+                            // 一定是群
+                            // sleep(发送间隔*1000);
 
-                            sleep(1000 + random(500, 1000));
-
-                            // 查找搜索键
-                            var title_bars = className("android.view.ViewGroup").depth(8).find();
-                            if (title_bars){
-                                var title_bar = title_bars[0];
-
-                                log("num of title_bar: " + title_bars.length);
-                            
-                                // 检查 title_bar 的长度, 6 是私聊 7 是群聊
-                                var lengofbar = title_bar.children().length;
-                                log("length of bar: " + lengofbar);
-
-                                if (lengofbar == 7){
-                                    // 群聊
-                                    log(msg_name + " is group! ");
-                                    group_list.push(msg_name);
-                                    toSend = true;
-                                }else{
-                                    // 私聊
-                                    log(msg_name + " is dm! ");
-                                    toSend = false;
-
-                                    // 点击返回
-                                    var title_bar = className("android.view.ViewGroup").depth(8).find()[0];
-                                    // 返回
-                                    var back_img = title_bar.child(1);
-                                    back_img.click();
-
-                                    sleep(1000 + random(500, 1000));
-                                }
-                            }else{
-                                log("Can't find title bar!");
-                            }
-
-                            // 已经点击进去了
+                            group_list.push(msg_name);
+                            toSend = true;
 
                         }else{
                             // 非群检测，如果遇到名字在群里表里，直接发送。不需要更新群列表
                             if(群列表_QF.includes(msg_name)){
-                                sleep(发送间隔*1000);
-                                if(item.findOne(className("android.widget.RelativeLayout")).click()){
-                                    log("Clicked success2!");
-                                } else{
-                                    log("Clicked failed2!");
-                                }
-
                                 group_list.push(msg_name);
-                                sleep(1000 + random(500, 1000));
+                                // sleep(1000 + random(500, 1000));
 
                                 toSend = true;
                             }else{
@@ -180,7 +146,19 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                         // 如果!toSend, 上面的代码已经是保证返回出去的状态
                         if (toSend){
                             // toSend 表示是群聊
+                            sleep(发送间隔*1000);
+
                             if (this.randomProbability(群发送概率)) {
+
+                                // 点击 item
+                                if(item.findOne(className("android.widget.RelativeLayout")).click()){
+                                    log("Clicked success1!");
+                                } else{
+                                    log("Clicked failed1!");
+                                }
+
+                                sleep(1000 + random(500, 1000));
+
                                 if (发送文字){
 
                                     // 群发送概率
@@ -220,15 +198,30 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
     
                                     sleep(1000 + random(500, 1000));
     
-                                    var image_buttons = className("android.widget.LinearLayout").depth(16).find();
-                                    log("Num of image buttons: " + image_buttons.length);
+                                    // var image_buttons = className("android.widget.LinearLayout").depth(16).find();
+                                    // log("Num of image buttons: " + image_buttons.length);
+                                    // var image_button = image_buttons[0];
+
+                                    var gallery_text = textContains("相簿").className("android.widget.TextView").depth(16).findOne();
+                                    var image_button = gallery_text.parent().child(0);
+
     
-                                    var image_button = image_buttons[0];
-                                    image_button.click();
+                                    
+
+                                    var clicked = false;
+                                    while(!clicked){
+                                        if(image_button.click()){
+                                            clicked = true;
+                                        }else{
+                                            log("点击相册失败，继续点击");
+                                        }
+                                        sleep(500 + random(50, 100));
+                                    }
+                                    
                                     sleep(1000 + random(500, 1000));
     
                                     var firstPicture = className("android.widget.FrameLayout").depth(13).drawingOrder(1).findOne();
-                                    log("Num of image buttons: " + image_buttons.length);
+                                    // log("Num of image buttons: " + image_buttons.length);
                                     
                                     // 选择图片
                                     // firstPicture.child(0).child(0).children().length;
@@ -242,10 +235,17 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
                                     // 发送
                                     var send_button = textContains("发送").className("android.widget.TextView").clickable(true).findOne();
                                     send_button.click();
+
+                                    // 保存已发送群。
     
                                     sleep(1000 + random(500, 1000));
+                                    
     
                                 }
+
+                                // 储存发送过的群
+                                已发群.push(msg_name);
+                                local_storage.put("params_XHS_Sent_GROUP", JSON.stringify(已发群))
 
                             }else { log("未发送群消息") }
 
@@ -345,6 +345,8 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
 
                         }
                         
+                    }else if(!msg_list.includes(msg_name) && 已发群.includes(msg_name)){
+                        all_included = false;
                     }
                 }
             }
@@ -365,21 +367,365 @@ HK_XHS_QF.Main = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 
 
     return group_list;
 
-    // var id = setInterval(() => {
-    //     log("执行小红书养号任务-正在观看视频");
-    //     // 群发图片
-    //     this.task_XHS_YH_actions(留言数组, 作品评论概率, 作者关注概率, 作品点赞概率, 访问作者主页概率);
-    //     // 检查是否达到总运行时间
-    //     var currentTime = new Date().getTime();
+}
 
-    //     if ((currentTime - startTime) >= timerDuration) {
-    //         console.log("达到总运行时长，跳出程序");
-    //         home();
-    //         clearInterval(id);
 
-    //     }
+HK_XHS_QF.Main2 = function XHS_QF_Main(发送文字, 发送图片, 改群昵称, 群昵称, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF) {
+    
+    if (!群检测 && 群列表_QF.length === 0){
+        toastLog("群列表为空！请打开群扫描");
+        return 群列表_QF;
+    }
 
-    // }, Math.round((Math.random() * (单个视频最大时长 - 单个视频最小时长 + 1) + 单个视频最小时长)) * 1000);
+    let timerDuration = 运行时长 * 60 * 1000; // 10秒，单位为毫秒
+    //// 获取当前时间
+    let startTime = new Date().getTime();
+
+    log("已进入小红书，将执行任务４");
+    // var returned = text("发现").className("android.widget.TextView").untilFind();
+    
+
+    // 点击热门
+    log("点击我");
+    var returned = text("我").className("android.widget.TextView").findOne();
+    returned.parent().click();
+    sleep(1000);
+
+    this.swipeAction_Reverse()
+    sleep(1000);
+    
+    
+    log("刷新");
+    // 刷新
+    
+    // sleep(1000);
+
+    var msg_list = [];
+
+    var group_list = [];
+    var sent_group_list = [];
+
+    var 已发群 = [];
+
+    var local_storage = storages.create("Siyubao.xyz.localStorage");
+    var sentGroup = local_storage.get("params_XHS_Sent_GROUP");
+    if(sentGroup){
+        已发群 = JSON.parse(sentGroup);
+        toastLog("发现已发群：" + 已发群.length);
+    }
+
+
+    // 点击进入群聊
+    var returned = className("androidx.recyclerview.widget.RecyclerView").depth(18).findOne();
+    var foundGroupCard = text("群聊").className("android.widget.TextView").depth(22).findOne(500);
+
+    while(!foundGroupCard){
+        // swipe left
+        var X1 = returned.bounds().centerX();
+        var Y1 = returned.bounds().centerY();
+
+        log("swipeLeft");
+
+        this.swipeAction_Left(X1, Y1);
+
+        foundGroupCard = text("群聊").className("android.widget.TextView").depth(22).findOne(500);
+    }
+
+    // 点击群聊
+    foundGroupCard.parent().parent().parent().click();
+
+    sleep(1000);
+
+    // 点击我加入的
+    var joint_list = text("我加入的").className("android.widget.TextView").findOne();
+    joint_list.parent().click();
+
+    sleep(1500);
+
+
+    // 遍历列表寻找未检查的消息，检查是否是群，然后对群消息进行发送图片。
+    let stop = false;
+    while(!stop){
+        var returned = className("androidx.recyclerview.widget.RecyclerView").depth(10).findOne();
+
+        // 假设只有一个 recyclerview
+        var recyclerview = returned;
+
+        let all_included = true;
+        children = recyclerview.children();
+        log("length of msg list: " + children.length);
+        children.forEach((item, index, array) => {
+            
+            // 在这里执行针对当前元素的操作
+            // 获得名字
+            if (item.className() == "android.widget.LinearLayout" && item.clickable()){
+
+                var msg_card = item.findOne(className("android.widget.LinearLayout"));
+
+                // 如果不存在 android.widget.LinearLayout 就不是群聊
+                if(msg_card){
+                    var msg_name = msg_card.find(className("android.widget.TextView"))[0].text();
+
+                    // 检查 msg_name 是否检查过
+                    if (!msg_list.includes(msg_name) && !已发群.includes(msg_name)){
+                        log("Name of the msg: " + msg_name);
+                        all_included = false;
+                        msg_list.push(msg_name);
+
+                        // msg_name 还没检查，进行群发判断
+
+                        // 1. 两种情况：发送 和 不发送
+                        // 2. 如果不发送：非群检测下 名字不在群列表，检测下 点击进去是私聊
+                        // 3. 如果发送: 非群检测下 名字在群列表，检测下 点击进去是群聊
+
+                        var toSend = false;
+                        
+                        
+                        if(群检测){
+                            // 一定是群
+                            // sleep(发送间隔*1000);
+
+                            group_list.push(msg_name);
+                            toSend = true;
+
+                        }else{
+                            // 非群检测，如果遇到名字在群里表里，直接发送。不需要更新群列表
+                            if(群列表_QF.includes(msg_name)){
+                                group_list.push(msg_name);
+                                // sleep(1000 + random(500, 1000));
+
+                                toSend = true;
+                            }else{
+                                toSend = false;
+                            }
+                        }
+
+                        
+
+                        // 因为2种toSend情况都有发送图片的代码, 所以在下面统一操作
+                        // 如果!toSend, 上面的代码已经是保证返回出去的状态
+                        if (toSend){
+                            // toSend 表示是群聊
+                            sleep(发送间隔*1000);
+
+                            if (this.randomProbability(群发送概率)) {
+
+                                // 点击 item
+                                if(item.click()){
+                                    log("Clicked success1!");
+                                } else{
+                                    log("Clicked failed1!");
+                                }
+
+                                sleep(1000 + random(500, 1000));
+
+                                if (发送文字){
+
+                                    // 群发送概率
+    
+                                    var returned = className("android.widget.EditText").clickable(true).visibleToUser(true).findOne(1000);
+                                    if (returned) {
+                                        click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                        sleep(500 + random(500, 1000));
+                                    } else {
+                                        toastLog("未找到输入框");
+                                    }
+    
+                                    setText(文字内容)
+                                    sleep(1000 + random(500, 1000))
+                                    
+                                    var returned = text("发送").className("android.widget.TextView").clickable(true).visibleToUser(true).findOne(500);
+                                    if (returned) {
+                                        click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                        sleep(500 + random(100, 200));
+                                        log("已发消息");
+                                    } else {
+                                        toastLog("未找到发送键");
+                                    }
+    
+                                    sleep(1000 + random(500, 1000))
+    
+    
+                                }
+    
+                                if (发送图片){
+                                    // 发送图片
+                                    var add_buttons = className("android.widget.ImageView").depth(10).find();
+                                    log("Num of add buttons: " + add_buttons.length);
+    
+                                    var add_button = add_buttons[0];
+                                    add_button.click();
+    
+                                    sleep(1000 + random(500, 1000));
+    
+                                    // var image_buttons = className("android.widget.LinearLayout").depth(16).find();
+                                    // log("Num of image buttons: " + image_buttons.length);
+                                    // var image_button = image_buttons[0];
+
+                                    var gallery_text = textContains("相簿").className("android.widget.TextView").depth(16).findOne();
+                                    var image_button = gallery_text.parent().child(0);
+
+    
+                                    
+
+                                    var clicked = false;
+                                    while(!clicked){
+                                        if(image_button.click()){
+                                            clicked = true;
+                                        }else{
+                                            log("点击相册失败，继续点击");
+                                        }
+                                        sleep(500 + random(50, 100));
+                                    }
+                                    
+                                    sleep(1000 + random(500, 1000));
+    
+                                    var firstPicture = className("android.widget.FrameLayout").depth(13).drawingOrder(1).findOne();
+                                    // log("Num of image buttons: " + image_buttons.length);
+                                    
+                                    // 选择图片
+                                    if(firstPicture.child(0).child(0).child(4).click()){
+                                        log("picture selected success!");
+                                    }else{
+                                        toastLog("picture selected failed!");
+                                    }
+                                    sleep(1000 + random(500, 1000));
+    
+                                    // 发送
+                                    var send_button = textContains("发送").className("android.widget.TextView").clickable(true).findOne();
+                                    send_button.click();
+
+                                    // 保存已发送群。
+    
+                                    sleep(1000 + random(500, 1000));
+                                    
+    
+                                }
+
+                                // 储存发送过的群
+                                已发群.push(msg_name);
+                                local_storage.put("params_XHS_Sent_GROUP", JSON.stringify(已发群))
+
+                            }else { log("未发送群消息") }
+
+
+                            if (改群昵称){
+
+                                // 查找搜索键
+                                var title_bars = className("android.view.ViewGroup").depth(8).find();
+                                if (title_bars){
+                                    var title_bar = title_bars[0];
+
+                                    log("num of title_bar: " + title_bars.length);
+                                
+                                    // 检查 title_bar 的长度, 6 是私聊 7 是群聊
+                                    var lengofbar = title_bar.children().length;
+                                    log("length of bar: " + lengofbar);
+                                    var menu_button = title_bar.children()[6];
+                                    menu_button.click();
+                                    sleep(1000 + random(500, 1000));
+
+                                    var returned = textContains("我在本群的昵称").className("android.widget.TextView").findOne(500);
+                                    if (returned) {
+                                        returned.parent().parent().parent().click();
+                                        sleep(200 + random(100, 200));
+                                    } else {
+                                        toastLog("未找到昵称框");
+                                    }
+
+                                    
+
+                                    // 输入群昵称
+                                    var returned = className("android.widget.EditText").clickable(true).visibleToUser(true).findOne(1000);
+                                    if (returned) {
+                                        // click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                        returned.click()
+                                        sleep(500 + random(100, 200));
+                                    } else {
+                                        toastLog("未找到输入框");
+                                    }
+
+                                    log("输入昵称");
+
+                                    setText(群昵称);
+                                    sleep(1000 + random(500, 1000));
+
+                                    // 保存
+                                    var returned = text("保存").className("android.widget.Button").clickable(true).enabled(true).visibleToUser(true).findOne(500);
+                                    if (returned) {
+                                        click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                        sleep(500 + random(100, 200));
+                                        log("已保存");
+                                    } else {
+                                        toastLog("保存键不可用");
+
+                                        var returned = className("android.widget.RelativeLayout").depth(7).findOne(1000);
+                                        returned = returned.child(0);
+                                        if (returned) {
+                                            click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                            sleep(500 + random(100, 200));
+                                            log("已返回");
+                                        } else {
+                                            toastLog("未找到返回键");
+                                        }
+                                    }
+
+                                    sleep(1000 + random(500, 1000))
+
+                                    // 返回
+                                    var returned = className("android.widget.RelativeLayout").depth(7).findOne(1000);
+                                    returned = returned.child(0);
+                                    if (returned) {
+                                        click(returned.bounds().centerX() + random(-5, 5), returned.bounds().centerY() + random(-5, 5));
+                                        sleep(500 + random(100, 200));
+                                        log("已返回");
+                                    } else {
+                                        toastLog("未找到返回键");
+                                    }
+
+                                    sleep(1000 + random(500, 1000))
+
+                                    
+                                }else{
+                                    toastLog("Can't find title bar!");
+                                }
+
+
+                            }
+
+                            // 点击返回
+                            var title_bar = className("android.view.ViewGroup").depth(8).find()[0];
+                            // 返回
+                            var back_img = title_bar.child(1);
+                            back_img.click();
+
+                            sleep(1000 + random(500, 1000));
+                            
+
+                        }
+                        
+                    }else if(!msg_list.includes(msg_name) && 已发群.includes(msg_name)){
+                        all_included = false;
+                    }
+                }
+            }
+
+        });
+
+        // sleep(1500);
+        if (all_included){
+            stop = true;
+            toastLog("遍历所有消息，群发结束!");
+        }
+        // swipe down
+        sleep(500+random(500, 1000))
+        this.swipeAction()
+
+    }
+        
+
+    return group_list;
+
 }
 
 
@@ -502,7 +848,7 @@ sleep(2000+random(500,1000))
 
 
     sleep(500+random(500, 1000))
-    this.swipeAction()
+    this.swipeAction_Up()
 }
 
 
@@ -520,6 +866,33 @@ HK_XHS_QF.swipeAction = function swipeAction() {
 
 }
 
+HK_XHS_QF.swipeAction_Up = function swipeAction() {
+    var X1 = device.width / 2; // 起始点X坐标，屏幕宽度的一半
+    var Y1 = device.height * 3 / 4; // 起始点Y坐标，屏幕高度的一半
+    var X2 = X1; // 结束点X坐标，向左滑动300像素
+    var Y2 = device.height * 1 / 4; // 结束点Y坐标保持不变
+    var duration1 = 1000; // 滑动持续时间，单位为毫秒
+
+    // 执行滑动操作
+    swipe(X1, Y1, X2, Y2, duration1);
+    sleep(3000);
+
+}
+
+
+HK_XHS_QF.swipeAction_Left = function swipeAction(X1, Y1) {
+    // var X1 = device.width / 2; // 起始点X坐标，屏幕宽度的一半
+    // var Y1 = (device.height / 1.5) + random(-10, 10); // 起始点Y坐标，屏幕高度的一半
+    X1 = device.width * 3 / 4;
+    var X2 = device.width * 1 / 4; // 结束点X坐标，向左滑动300像素
+    var Y2 = Y1; // 结束点Y坐标保持不变
+    var duration1 = 1000; // 滑动持续时间，单位为毫秒
+
+    // 执行滑动操作
+    swipe(X1, Y1, X2, Y2, duration1);
+    sleep(1000);
+
+}
 
 
 HK_XHS_QF.swipeAction_Reverse = function swipeAction_Reverse() {

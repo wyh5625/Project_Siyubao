@@ -588,6 +588,9 @@ var main_stop = mainPage.主页面停止
 var timer = mainPage.timerbox
 var timePicker = mainPage.timepicker
 
+var clear_sentButton = thirdPage.清空进度;
+var groupSentCount = thirdPage.发送进度;
+
 timePicker.setIs24HourView(true)
 // setOnTimeChangedListener({
 //     onTimeChanged: function (v, h, m) {
@@ -1120,6 +1123,25 @@ function verification(password) {
     }
 
 }
+
+// 更新已发群的数量显示
+var sentGroup = local_storage.get("params_XHS_Sent_GROUP");
+if(sentGroup){
+    已发群 = JSON.parse(sentGroup);
+    toastLog("发现已发群：" + 已发群.length);
+    groupSentCount.setText(String(已发群.length));
+}else{
+    groupSentCount.setText(String(0));
+}
+
+
+clear_sentButton.click(function () {
+    // 删除发送过的群
+    local_storage.remove("params_XHS_Sent_GROUP");
+
+    // 跟新TextView
+    groupSentCount.setText(String(0));
+})
 
 
 
@@ -1862,7 +1884,7 @@ main_executeButton.click(function () {
 
                                     app.launchApp("小红书")
                                     threads.start(function () { 
-                                        群列表_QF = HK_XHS_QF.Main(发送文字, 发送图片, 改群昵称, 群昵称, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF)  
+                                        群列表_QF = HK_XHS_QF.Main2(发送文字, 发送图片, 改群昵称, 群昵称, 文字内容, 群检测, 发送间隔, 群发送概率, 群列表_QF)  
                                         local_storage.put("params_XHS_GROUP", JSON.stringify(群列表_QF))
                                     })
                                     break;

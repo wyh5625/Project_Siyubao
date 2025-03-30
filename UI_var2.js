@@ -1546,6 +1546,29 @@ var thirdPage = ui.inflate(
                                                 </horizontal>
                                             </horizontal>
 
+                                            <com.google.android.material.divider.MaterialDivider h="*" dividerColor="#F3F4F8" dividerInsetStart="40dp" dividerInsetEnd="40dp" dividerThickness="4" />
+
+                                            <horizontal h="40dp" w="*" >
+                                                <text h="*" w="0" layout_weight="1" gravity="center_vertical" text="已发群" marginLeft="15dp" />
+                                                <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+                                                    <text id = "发送进度" h="*" w="0" layout_weight="1" gravity="center_vertical" text="0" marginLeft="15dp" />
+                                                    <card id = "清空进度" w="75dp" h="*"  gravity="center_vertical" margin="10dp 2dp 10dp 2dp"
+                                                    clickable="true" cardCornerRadius="18dp" elevation="5dp" >
+                                                        <text  text = "清空进度"  textSize="14sp" textColor="#000000" gravity="center" textStyle="bold"  />
+                                                    </card>
+                                                </horizontal>
+
+                                                {/* <horizontal h="*" w="0dp" layout_weight="1" gravity="right|center_vertical" marginRight="15dp">
+
+                                                    <card id="清空进度" clickable="True" w="auto" h="0" layout_weight="1"  marginLeft="30dp" cardBackgroundColor="#FFFFFF" cardCornerRadius="18dp" cardElevation="8dp">
+                                                        <horizontal layout_gravity="center_vertical" >
+                                                            <text text="0" h="auto" w="0" layout_weight="1.5" layout_gravity="center" />
+                                                            <button h="auto" w="0" layout_weight="2"  text="清空进度" clickable="True" bg="#FFFFFF" textColor="#000000" typeface="monospace" textStyle="bold" textSize="14sp" />
+                                                        </horizontal>
+                                                    </card>
+                                                </horizontal> */}
+                                            </horizontal>
+
                                         </vertical>
                                     </vertical>
                                 </card>
